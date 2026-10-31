@@ -1,0 +1,29 @@
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.filters input,
+.filters select {
+  border: 1px solid #d6dde8;
+  border-radius: 5px;
+  padding: 10px 12px;
+  font-size: 12px;
+  background: #fff;
+}
+.filters input {
+  flex: 1;
+  min-width: 200px;
+}
+.title-cell a:hover {
+  color: var(--blue);
+}
+.actions > * {
+  margin-left: 6px;
+}
+.count {
+  margin: 12px 2px 0;
+  font-size: 11px;
+  color: var(--muted);
+}

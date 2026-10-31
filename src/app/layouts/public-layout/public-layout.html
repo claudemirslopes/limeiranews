@@ -1,0 +1,140 @@
+<div class="site-shell">
+  <div class="utility-bar">
+    <div class="container utility-inner">
+      <span class="date-line">{{ today }}</span>
+      <span class="location-line"><span class="live-dot"></span> Limeira, São Paulo</span>
+      <div class="utility-links">
+        <a [routerLink]="[]" fragment="newsletter" queryParamsHandling="preserve">Newsletter</a>
+        <a href="mailto:comercial@limeiranews.com.br">Anuncie</a>
+      </div>
+    </div>
+  </div>
+
+  <header class="brand-header">
+    <div class="container brand-inner">
+      <button
+        class="icon-button mobile-menu-button"
+        type="button"
+        aria-label="Abrir menu"
+        [attr.aria-expanded]="mobileMenuOpen()"
+        (click)="toggleMobileMenu()"
+      >
+        ☰
+      </button>
+      <a class="brand-lockup" routerLink="/" aria-label="Limeira News - início">
+        <img src="assets/limeira-news-logo.png" alt="Limeira News" class="brand-logo" />
+      </a>
+      <div class="brand-promise">
+        <span class="promise-line"></span>
+        <span>Informação que conecta<br /><strong>Limeira ao mundo.</strong></span>
+      </div>
+      <div class="header-actions">
+        <button
+          class="icon-button search-toggle"
+          type="button"
+          aria-label="Abrir busca"
+          [attr.aria-expanded]="searchOpen()"
+          (click)="toggleSearch()"
+        >
+          ⌕
+        </button>
+        <a
+          class="newsletter-button"
+          [routerLink]="[]"
+          fragment="newsletter"
+          queryParamsHandling="preserve"
+        >
+          Receba as notícias <span>→</span>
+        </a>
+      </div>
+    </div>
+    @if (searchOpen()) {
+      <div class="container search-row">
+        <form class="search-form" (submit)="$event.preventDefault(); submitSearch()">
+          <input
+            [formControl]="searchControl"
+            type="search"
+            placeholder="O que você quer encontrar?"
+            aria-label="Buscar notícias"
+          />
+          <button type="submit">Buscar notícias</button>
+        </form>
+      </div>
+    }
+  </header>
+
+  <nav class="main-nav" [class.nav-open]="mobileMenuOpen()" aria-label="Editorias">
+    <div class="container nav-inner">
+      <a class="home-link" routerLink="/" aria-label="Página inicial">⌂</a>
+      @for (item of menuItems(); track item.label) {
+        @if (isExternal(item.url)) {
+          <a [href]="item.url" [attr.target]="item.target ?? '_self'" rel="noopener">{{
+            item.label
+          }}</a>
+        } @else {
+          <a [routerLink]="item.url" routerLinkActive="active">{{ item.label }}</a>
+        }
+      }
+      <button class="nav-search" type="button" aria-label="Buscar" (click)="toggleSearch()">
+        ⌕
+      </button>
+    </div>
+  </nav>
+
+  @if (breaking(); as news) {
+    <section class="container breaking-row">
+      <div class="breaking-label"><span class="pulse"></span> AGORA</div>
+      @if (news.article_slug) {
+        <a class="breaking-text" [routerLink]="['/noticia', news.article_slug]">
+          <strong>{{ news.headline }}</strong>
+        </a>
+        <span class="breaking-arrow">↗</span>
+      } @else {
+        <p class="breaking-text">
+          <strong>{{ news.headline }}</strong>
+        </p>
+      }
+    </section>
+  }
+
+  <main>
+    <router-outlet />
+  </main>
+
+  <app-newsletter-section />
+
+  <footer class="site-footer">
+    <div class="container footer-main">
+      <div class="footer-brand">
+        <img src="assets/logo_limeiranews_02.png" alt="Limeira News" />
+        <p>Jornalismo local, informação relevante e conexão com a comunidade.</p>
+      </div>
+      <div class="footer-column">
+        <strong>Editorias</strong>
+        @for (item of menuItems().slice(0, 5); track item.label) {
+          @if (!isExternal(item.url)) {
+            <a [routerLink]="item.url">{{ item.label }}</a>
+          }
+        }
+      </div>
+      <div class="footer-column">
+        <strong>Institucional</strong>
+        <a routerLink="/pagina/sobre">Sobre nós</a>
+        <a routerLink="/pagina/politica-editorial">Política editorial</a>
+        <a routerLink="/pagina/politica-de-privacidade">Privacidade</a>
+      </div>
+      <div class="footer-column">
+        <strong>Fale com a gente</strong>
+        <a href="mailto:redacao@limeiranews.com.br">Redação</a>
+        <a href="mailto:comercial@limeiranews.com.br">Comercial</a>
+        <a routerLink="/admin">Área restrita</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container footer-bottom-inner">
+        <span>© {{ currentYear }} Limeira News. Todos os direitos reservados.</span>
+        <span>Feito para Limeira. Conectado ao mundo.</span>
+      </div>
+    </div>
+  </footer>
+</div>

@@ -1,0 +1,29 @@
+<article class="news-card">
+  <a class="news-image" [routerLink]="['/noticia', article().slug]" [attr.aria-label]="article().title">
+    @if (article().cover_url) {
+      <img [src]="article().cover_url" [alt]="article().title" loading="lazy" />
+    } @else {
+      <span class="no-cover" aria-hidden="true">LN<span>+</span></span>
+    }
+    @if (article().category; as category) {
+      <span class="image-category">{{ category.name }}</span>
+    }
+    <span class="image-arrow">↗</span>
+  </a>
+  <div class="news-card-body">
+    <div class="card-meta">
+      @if (location()) {
+        <span>{{ location() }}</span>
+        <span>•</span>
+      }
+      <span class="when">{{ article().published_at | relativeTime }}</span>
+    </div>
+    <h3>
+      <a [routerLink]="['/noticia', article().slug]">{{ article().title }}</a>
+    </h3>
+    @if (article().summary) {
+      <p>{{ article().summary }}</p>
+    }
+    <a class="card-read" [routerLink]="['/noticia', article().slug]">Continuar lendo <span>→</span></a>
+  </div>
+</article>

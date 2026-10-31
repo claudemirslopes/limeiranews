@@ -1,0 +1,48 @@
+<div class="container page-block">
+  <header class="page-heading">
+    <span class="eyebrow">Busca</span>
+    <h1>Encontre uma notícia<span class="title-period">.</span></h1>
+    <form class="search-form" (submit)="$event.preventDefault(); submit()">
+      <input
+        [formControl]="input"
+        type="search"
+        placeholder="O que você quer encontrar?"
+        aria-label="Buscar notícias"
+      />
+      <button type="submit">Buscar notícias</button>
+    </form>
+  </header>
+
+  @let s = state();
+  @if (query().q.length < 2) {
+    <app-empty-state
+      title="Digite pelo menos 2 caracteres"
+      message="Pesquise por assunto, bairro, nome ou editoria."
+    />
+  } @else if (s === null || s.status === 'loading') {
+    <app-loading-state label="Buscando notícias…" />
+  } @else if (s.status === 'error') {
+    <app-empty-state tone="error" title="Não foi possível realizar a busca" [message]="s.message" />
+  } @else {
+    @if (s.data.data.length === 0) {
+      <app-empty-state
+        title="Nenhum resultado encontrado"
+        [message]="'Não encontramos notícias para “' + query().q + '”. Tente outros termos.'"
+        linkLabel="Ir para a página inicial"
+        linkTo="/"
+      />
+    } @else {
+      <p class="result-count">
+        {{ s.data.meta.total }}
+        {{ s.data.meta.total === 1 ? 'resultado' : 'resultados' }} para
+        <strong>“{{ query().q }}”</strong>
+      </p>
+      <div class="news-grid">
+        @for (article of s.data.data; track article.id) {
+          <app-news-card [article]="article" />
+        }
+      </div>
+      <app-pagination [meta]="s.data.meta" (pageChange)="goToPage($event)" />
+    }
+  }
+</div>

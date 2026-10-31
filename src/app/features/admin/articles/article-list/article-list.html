@@ -1,0 +1,77 @@
+<div class="adm-page-head">
+  <div>
+    <span class="eyebrow">CONTEÚDO</span>
+    <h1>Notícias</h1>
+  </div>
+  <a class="adm-btn is-green" routerLink="/admin/noticias/nova">＋ Nova notícia</a>
+</div>
+
+<form class="filters" (submit)="$event.preventDefault(); applyFilters()">
+  <input [formControl]="search" type="search" placeholder="Buscar por título…" aria-label="Buscar" />
+  <select [formControl]="statusFilter" aria-label="Status">
+    <option value="">Todos os status</option>
+    @for (option of statusOptions; track option.value) {
+      <option [value]="option.value">{{ option.label }}</option>
+    }
+  </select>
+  <button class="adm-btn" type="submit">Filtrar</button>
+</form>
+
+@if (actionError(); as message) {
+  <div class="adm-alert is-error" role="alert">{{ message }}</div>
+}
+
+@let s = state();
+@if (s.status === 'loading') {
+  <app-loading-state label="Carregando notícias…" />
+} @else if (s.status === 'error') {
+  <app-empty-state tone="error" title="Não foi possível carregar as notícias" [message]="s.message" />
+} @else if (s.data.data.length === 0) {
+  <app-empty-state
+    title="Nenhuma notícia encontrada"
+    message="Ajuste os filtros ou crie a primeira matéria."
+    linkLabel="Criar notícia"
+    linkTo="/admin/noticias/nova"
+  />
+} @else {
+  <div class="adm-table-wrap">
+    <table class="adm-table">
+      <thead>
+        <tr>
+          <th>Título</th>
+          <th>Status</th>
+          <th>Categoria</th>
+          <th>Publicada em</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (article of s.data.data; track article.id) {
+          <tr>
+            <td class="title-cell">
+              <a [routerLink]="['/admin/noticias', article.id, 'editar']">{{ article.title }}</a>
+            </td>
+            <td>
+              @if (article.status) {
+                <span class="adm-badge" [class]="'adm-badge is-' + article.status">
+                  {{ article.status_label }}
+                </span>
+              }
+            </td>
+            <td>{{ article.category?.name ?? '—' }}</td>
+            <td class="adm-muted">{{ article.published_at ? (article.published_at | dateBr: 'datetime') : '—' }}</td>
+            <td class="actions">
+              <a class="adm-btn is-ghost is-small" [routerLink]="['/admin/noticias', article.id, 'editar']">Editar</a>
+              @if (article.status === 'published') {
+                <a class="adm-btn is-ghost is-small" [routerLink]="['/noticia', article.slug]" target="_blank">Ver</a>
+              }
+              <button class="adm-btn is-danger is-small" type="button" (click)="remove(article)">Excluir</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <p class="count">{{ s.data.meta.total }} {{ s.data.meta.total === 1 ? 'matéria' : 'matérias' }}</p>
+  <app-pagination [meta]="s.data.meta" (pageChange)="goToPage($event)" />
+}

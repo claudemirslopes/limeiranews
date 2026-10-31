@@ -1,0 +1,135 @@
+:host {
+  display: block;
+}
+
+.newsletter-section {
+  background: var(--green);
+  color: #fff;
+}
+.newsletter-inner {
+  display: grid;
+  grid-template-columns: 54px 1fr minmax(270px, 0.8fr);
+  gap: 20px;
+  align-items: center;
+  padding-top: 35px;
+  padding-bottom: 35px;
+}
+.newsletter-icon {
+  width: 50px;
+  height: 50px;
+  border: 1px solid #ffffff70;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 27px;
+}
+.newsletter-copy .eyebrow {
+  margin-bottom: 6px;
+}
+.newsletter-copy h2 {
+  font-size: 24px;
+  letter-spacing: -0.04em;
+  margin: 0 0 6px;
+}
+.newsletter-copy h2 span {
+  color: #d7ffe5;
+}
+.newsletter-copy p {
+  font-size: 11px;
+  color: #e3ffec;
+  margin: 0;
+}
+.newsletter-form label {
+  display: block;
+  font-size: 10px;
+  font-weight: 750;
+  margin-bottom: 7px;
+}
+.newsletter-input-row {
+  display: flex;
+  background: #fff;
+  border-radius: 4px;
+  padding: 4px;
+}
+.newsletter-input-row input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  padding: 9px 10px;
+  font-size: 11px;
+  color: var(--ink);
+}
+.newsletter-input-row button {
+  width: 37px;
+  border: 0;
+  border-radius: 3px;
+  background: var(--blue);
+  color: #fff;
+  font-size: 19px;
+  cursor: pointer;
+}
+.newsletter-input-row button:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+.feedback {
+  margin: 8px 0 0;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+}
+.feedback.is-error {
+  background: #ffffffe6;
+  color: #a3222c;
+  padding: 6px 9px;
+  border-radius: 3px;
+}
+.newsletter-form > small {
+  display: block;
+  font-size: 8px;
+  color: #e0ffea;
+  margin-top: 7px;
+}
+.newsletter-form > small a {
+  text-decoration: underline;
+}
+
+@media (max-width: 800px) {
+  .newsletter-inner {
+    grid-template-columns: 45px 1fr;
+    gap: 15px;
+  }
+  .newsletter-icon {
+    width: 43px;
+    height: 43px;
+  }
+  .newsletter-form {
+    grid-column: 2;
+  }
+}
+
+@media (max-width: 560px) {
+  .newsletter-inner {
+    grid-template-columns: 38px 1fr;
+    gap: 12px;
+    padding-top: 28px;
+    padding-bottom: 28px;
+  }
+  .newsletter-icon {
+    width: 37px;
+    height: 37px;
+    font-size: 22px;
+  }
+  .newsletter-copy h2 {
+    font-size: 20px;
+  }
+  .newsletter-copy p {
+    font-size: 10px;
+    line-height: 1.5;
+  }
+  .newsletter-form {
+    grid-column: 1 / -1;
+    margin-top: 4px;
+  }
+}

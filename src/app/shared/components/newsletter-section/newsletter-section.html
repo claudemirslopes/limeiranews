@@ -1,0 +1,32 @@
+<section class="newsletter-section" id="newsletter">
+  <div class="container newsletter-inner">
+    <div class="newsletter-icon" aria-hidden="true">✳</div>
+    <div class="newsletter-copy">
+      <span class="eyebrow light-eyebrow">INFORMAÇÃO NA SUA CAIXA DE ENTRADA</span>
+      <h2>Comece o dia <span>bem informado.</span></h2>
+      <p>Receba uma seleção das principais notícias de Limeira e região.</p>
+    </div>
+    <form class="newsletter-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <label for="newsletter-email">Seu melhor e-mail</label>
+      <div class="newsletter-input-row">
+        <input
+          id="newsletter-email"
+          type="email"
+          formControlName="email"
+          placeholder="voce@email.com"
+          autocomplete="email"
+        />
+        <button type="submit" aria-label="Cadastrar e-mail" [disabled]="sending()">
+          {{ sending() ? '…' : '→' }}
+        </button>
+      </div>
+      @if (feedback(); as fb) {
+        <p class="feedback" [class.is-error]="!fb.ok" role="status">{{ fb.text }}</p>
+      }
+      <small>
+        Ao se cadastrar, você concorda com nossa
+        <a routerLink="/pagina/politica-de-privacidade">política de privacidade</a>.
+      </small>
+    </form>
+  </div>
+</section>

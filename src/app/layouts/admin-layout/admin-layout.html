@@ -1,0 +1,47 @@
+<div class="admin-shell" [class.menu-open]="menuOpen()">
+  <aside class="sidebar">
+    <a class="sidebar-brand" routerLink="/admin" (click)="closeMenu()">
+      <img src="assets/logo_limeiranews_02.png" alt="Limeira News" />
+      <span>Painel</span>
+    </a>
+    <nav class="sidebar-nav" aria-label="Painel administrativo">
+      <a
+        routerLink="/admin"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        (click)="closeMenu()"
+      >
+        <span class="ico">▦</span> Visão geral
+      </a>
+      <a routerLink="/admin/noticias" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenu()">
+        <span class="ico">☰</span> Notícias
+      </a>
+      <a routerLink="/admin/noticias/nova" routerLinkActive="active" (click)="closeMenu()">
+        <span class="ico">＋</span> Nova notícia
+      </a>
+    </nav>
+    <a class="sidebar-site" routerLink="/" target="_blank">Ver portal ↗</a>
+  </aside>
+
+  <div class="admin-main">
+    <header class="topbar">
+      <button class="menu-button" type="button" aria-label="Abrir menu" (click)="toggleMenu()">☰</button>
+      <span class="topbar-title">Limeira News · Administração</span>
+      <div class="topbar-user">
+        @if (auth.user(); as user) {
+          <span class="user-info">
+            <strong>{{ user.public_name }}</strong>
+            @if (user.role) {
+              <small>{{ user.role.display_name }}</small>
+            }
+          </span>
+        }
+        <button type="button" class="logout" (click)="logout()">Sair</button>
+      </div>
+    </header>
+    <main class="admin-content">
+      <router-outlet />
+    </main>
+  </div>
+  <div class="backdrop" (click)="closeMenu()"></div>
+</div>

@@ -1,0 +1,234 @@
+// Utilitários do painel administrativo (prefixo adm-).
+.adm-page-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+
+  h1 {
+    margin: 0;
+    font-size: 26px;
+    letter-spacing: -0.045em;
+    font-weight: 850;
+  }
+}
+
+.adm-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 20px;
+}
+
+.adm-card h2 {
+  margin: 0 0 14px;
+  font-size: 15px;
+  letter-spacing: -0.02em;
+}
+
+.adm-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid var(--blue);
+  background: var(--blue);
+  color: #fff;
+  border-radius: 5px;
+  padding: 10px 15px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:hover:not(:disabled) {
+    background: var(--blue-dark);
+  }
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  &.is-green {
+    background: var(--green);
+    border-color: var(--green);
+    &:hover:not(:disabled) {
+      background: #12904b;
+    }
+  }
+  &.is-ghost {
+    background: #fff;
+    color: var(--blue);
+    border-color: var(--line);
+    &:hover:not(:disabled) {
+      border-color: var(--blue);
+      background: #fff;
+    }
+  }
+  &.is-danger {
+    background: #fff;
+    color: #c2303b;
+    border-color: #f0c5c9;
+    &:hover:not(:disabled) {
+      background: #fff0f0;
+    }
+  }
+  &.is-small {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+}
+
+.adm-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+
+  label {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--ink);
+  }
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    border: 1px solid #d6dde8;
+    border-radius: 5px;
+    padding: 11px 12px;
+    font-size: 13px;
+    color: var(--ink);
+    background: #fff;
+
+    &:focus {
+      outline: 2px solid #18a95740;
+      border-color: var(--green);
+    }
+  }
+
+  textarea {
+    resize: vertical;
+    line-height: 1.6;
+  }
+
+  .adm-hint {
+    font-size: 10px;
+    color: var(--muted);
+  }
+
+  .adm-error {
+    font-size: 11px;
+    color: #c2303b;
+  }
+
+  &.has-error input,
+  &.has-error select,
+  &.has-error textarea {
+    border-color: #d62f3b;
+  }
+}
+
+.adm-alert {
+  border-radius: 5px;
+  padding: 11px 14px;
+  font-size: 12px;
+  margin-bottom: 16px;
+  line-height: 1.5;
+
+  &.is-error {
+    background: #fff0f0;
+    color: #a3222c;
+    border: 1px solid #f3c7cb;
+  }
+  &.is-success {
+    background: #eaf8f0;
+    color: #0e6b37;
+    border: 1px solid #bfe8d0;
+  }
+}
+
+.adm-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fff;
+}
+
+.adm-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+
+  th {
+    text-align: left;
+    padding: 12px 14px;
+    background: var(--paper);
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 13px 14px;
+    border-top: 1px solid var(--line);
+    vertical-align: middle;
+  }
+
+  td.title-cell {
+    min-width: 260px;
+    max-width: 440px;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  td.actions {
+    white-space: nowrap;
+    text-align: right;
+    display: table-cell;
+  }
+
+  tbody tr:hover {
+    background: #fafcff;
+  }
+}
+
+.adm-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+  background: #eef2f8;
+  color: #4b5a73;
+  white-space: nowrap;
+
+  &.is-published {
+    background: #e3f6ea;
+    color: #0e6b37;
+  }
+  &.is-in_review,
+  &.is-revision_requested {
+    background: #fff4de;
+    color: #8a5a00;
+  }
+  &.is-approved,
+  &.is-scheduled {
+    background: #e3edff;
+    color: #0b3a8c;
+  }
+  &.is-archived {
+    background: #f1f1f1;
+    color: #666;
+  }
+}
+
+.adm-muted {
+  color: var(--muted);
+}

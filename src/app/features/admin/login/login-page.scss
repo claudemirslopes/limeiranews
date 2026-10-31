@@ -1,0 +1,44 @@
+.login-screen {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px 16px;
+  background:
+    linear-gradient(180deg, var(--blue-dark) 0 38%, var(--paper) 38% 100%);
+  border-top: 3px solid var(--green);
+}
+.login-card {
+  width: min(420px, 100%);
+  background: #fff;
+  border-radius: 8px;
+  padding: 30px 30px 26px;
+  box-shadow: 0 24px 60px #061a3733;
+}
+.logo {
+  width: 180px;
+  height: 72px;
+  object-fit: contain;
+  object-position: left center;
+  margin-bottom: 12px;
+}
+h1 {
+  margin: 0;
+  font-size: 27px;
+  letter-spacing: -0.05em;
+}
+.lead {
+  margin: 6px 0 22px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.submit {
+  width: 100%;
+  padding: 13px;
+}
+.back {
+  display: inline-block;
+  margin-top: 18px;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--blue);
+}

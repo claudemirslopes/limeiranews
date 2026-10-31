@@ -1,0 +1,48 @@
+@let s = state();
+<div class="container page-block">
+  @if (s.status === 'loading') {
+    <app-loading-state label="Carregando editoria…" />
+  } @else if (s.status === 'error') {
+    <div class="page-heading"><h1>Editoria</h1></div>
+    <app-empty-state
+      [tone]="s.httpStatus === 404 ? 'neutral' : 'error'"
+      [title]="s.httpStatus === 404 ? 'Editoria não encontrada' : 'Não foi possível carregar a editoria'"
+      [message]="s.httpStatus === 404 ? 'Confira o endereço ou escolha uma editoria no menu.' : s.message"
+      linkLabel="Voltar para a página inicial"
+      linkTo="/"
+    />
+  } @else {
+    @let category = s.data.data;
+    @let list = s.data.articles;
+    <header class="page-heading">
+      <span class="eyebrow">{{ category.type === 'geographic' ? 'Região' : 'Editoria' }}</span>
+      <h1>{{ category.name }}<span class="title-period">.</span></h1>
+      @if (category.description) {
+        <p>{{ category.description }}</p>
+      }
+      @if (category.children && category.children.length > 0) {
+        <div class="chip-row">
+          @for (child of category.children; track child.id) {
+            <a [routerLink]="['/categoria', child.slug]">{{ child.name }}</a>
+          }
+        </div>
+      }
+    </header>
+
+    @if (list.data.length === 0) {
+      <app-empty-state
+        title="Ainda não há notícias nesta editoria"
+        message="Assim que novas matérias forem publicadas, elas aparecem aqui."
+        linkLabel="Ver todas as notícias"
+        linkTo="/"
+      />
+    } @else {
+      <div class="news-grid">
+        @for (article of list.data; track article.id) {
+          <app-news-card [article]="article" />
+        }
+      </div>
+      <app-pagination [meta]="list.meta" (pageChange)="goToPage($event)" />
+    }
+  }
+</div>

@@ -1,0 +1,194 @@
+@let s = state();
+@if (s.status === 'loading') {
+  <div class="container"><app-loading-state label="Carregando as últimas notícias…" /></div>
+} @else if (s.status === 'error') {
+  <div class="container page-block">
+    <app-empty-state
+      tone="error"
+      title="Não foi possível carregar as notícias"
+      [message]="s.message"
+    />
+  </div>
+} @else {
+  @if (view(); as v) {
+    @if (!v.hasContent) {
+      <div class="container page-block">
+        <app-empty-state
+          title="Ainda não há notícias publicadas"
+          message="Volte em alguns instantes: nossa redação está atualizando o portal."
+        />
+      </div>
+    } @else {
+      <section class="container lead-section">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">JORNALISMO LOCAL, OLHAR GLOBAL</span>
+            <h1>As notícias que <span>importam.</span></h1>
+          </div>
+          <p>
+            Informação confiável para entender<br class="desktop-break" />
+            o que acontece perto de você.
+          </p>
+        </div>
+
+        @if (v.lead; as lead) {
+          <div class="lead-grid">
+            <article class="lead-card">
+              @if (lead.cover_url) {
+                <img [src]="lead.cover_url" [alt]="lead.title" />
+              }
+              <div class="image-shade"></div>
+              <div class="lead-content">
+                @if (lead.category) {
+                  <span class="category-pill">{{ lead.category.name }}</span>
+                }
+                <h2>
+                  <a [routerLink]="['/noticia', lead.slug]">{{ lead.title }}</a>
+                </h2>
+                @if (lead.summary || lead.subtitle) {
+                  <p>{{ lead.summary || lead.subtitle }}</p>
+                }
+                <div class="story-meta">
+                  @if (location(lead)) {
+                    <span>{{ location(lead) }}</span>
+                    <span class="meta-dot">•</span>
+                  }
+                  <span>{{ lead.published_at | relativeTime }}</span>
+                </div>
+                <a class="read-story" [routerLink]="['/noticia', lead.slug]">
+                  Leia a matéria <span>↗</span>
+                </a>
+              </div>
+              @if (v.hero && v.hero.articles && v.hero.articles.length > 1) {
+                <div class="lead-number">01 <span>/ {{ indexLabel(v.hero.articles.length - 1) }}</span></div>
+              }
+            </article>
+
+            <aside class="latest-panel">
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">ACONTECE AGORA</span>
+                  <h2>Últimas notícias</h2>
+                </div>
+                <span class="live-tag"><i></i> AO VIVO</span>
+              </div>
+              @for (item of v.quick; track item.id; let i = $index) {
+                <a class="quick-story" [routerLink]="['/noticia', item.slug]">
+                  <span class="quick-index">{{ indexLabel(i) }}</span>
+                  <span class="quick-copy">
+                    @if (item.category) {
+                      <span class="quick-category">{{ item.category.name }}</span>
+                    }
+                    <strong>{{ item.title }}</strong>
+                    <small>
+                      {{ item.published_at | relativeTime }}
+                      @if (item.author) {
+                        <span>·</span> {{ item.author.name }}
+                      }
+                    </small>
+                  </span>
+                  <span class="quick-arrow">↗</span>
+                </a>
+              } @empty {
+                <p class="quick-empty">Sem outras notícias em destaque no momento.</p>
+              }
+              @if (v.latest) {
+                <a class="all-news-link" href="#ultimas" (click)="$event.preventDefault(); scrollTo('ultimas')">
+                  Ver todas as notícias <span>→</span>
+                </a>
+              }
+            </aside>
+          </div>
+        }
+      </section>
+
+      <section class="container ad-strip" id="anuncie">
+        <div class="ad-mark">LN<span>+</span></div>
+        <div class="ad-copy">
+          <small>PUBLICIDADE</small>
+          <strong>Sua marca em destaque na região.</strong>
+          <span>Conecte sua empresa à audiência do Limeira News.</span>
+        </div>
+        <a href="mailto:comercial@limeiranews.com.br">Anuncie aqui <span>↗</span></a>
+      </section>
+
+      @if (v.latest && v.latest.articles && v.latest.articles.length > 0) {
+        <section class="container news-section" id="ultimas">
+          <div class="section-title-row">
+            <div>
+              <span class="eyebrow">FIQUE BEM INFORMADO</span>
+              <h2>{{ v.latest.title }} <span class="title-period">.</span></h2>
+            </div>
+          </div>
+          <div class="news-grid">
+            @for (article of v.latest.articles; track article.id) {
+              <app-news-card [article]="article" />
+            }
+          </div>
+        </section>
+      }
+
+      @for (block of v.blocks; track block.id) {
+        <section class="container category-block">
+          <div class="section-title-row">
+            <div>
+              <span class="eyebrow">{{ block.section_type === 'region' ? 'NOSSA REGIÃO' : 'EDITORIA' }}</span>
+              <h2>{{ block.title }} <span class="title-period">.</span></h2>
+            </div>
+            <a class="text-link" [routerLink]="categoryLink(block)">
+              Ver tudo <span>→</span>
+            </a>
+          </div>
+          <div class="news-grid">
+            @for (article of block.articles; track article.id) {
+              <app-news-card [article]="article" />
+            }
+          </div>
+        </section>
+      }
+
+      <section class="regional-band">
+        <div class="container regional-inner">
+          <div class="regional-copy">
+            <span class="eyebrow light-eyebrow">NOSSA REGIÃO, NOSSA GENTE</span>
+            <h2>Limeira acontece.<br /><span>A gente conta.</span></h2>
+            <p>
+              Da notícia do bairro aos assuntos que movimentam o país: informação relevante, perto
+              de você.
+            </p>
+            <a routerLink="/categoria/regiao" class="regional-button">
+              Explorar notícias da região <span>→</span>
+            </a>
+          </div>
+          <div class="regional-stats">
+            <div><strong>01</strong><span>Olhar local</span><small>O que impacta sua cidade</small></div>
+            <div><strong>02</strong><span>Contexto regional</span><small>O que acontece por perto</small></div>
+            <div><strong>03</strong><span>Visão ampla</span><small>São Paulo, Brasil e mundo</small></div>
+          </div>
+          <div class="regional-decoration" aria-hidden="true">LN</div>
+        </div>
+      </section>
+
+      @if (v.mostRead && v.mostRead.articles && v.mostRead.articles.length > 0) {
+        <section class="container popular-section" id="mais-lidas">
+          <div class="section-title-row">
+            <div>
+              <span class="eyebrow">PARA NÃO PERDER</span>
+              <h2>{{ v.mostRead.title }} <span class="title-period">.</span></h2>
+            </div>
+            <span class="section-note">Assuntos de interesse da comunidade</span>
+          </div>
+          <div class="popular-list">
+            @for (item of v.mostRead.articles; track item.id; let i = $index) {
+              <a [routerLink]="['/noticia', item.slug]" class="popular-item">
+                <span class="popular-number">{{ indexLabel(i) }}</span>
+                <span class="popular-title">{{ item.title }}</span>
+                <span class="popular-arrow">↗</span>
+              </a>
+            }
+          </div>
+        </section>
+      }
+    }
+  }
+}

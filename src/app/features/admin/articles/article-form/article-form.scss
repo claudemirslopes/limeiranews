@@ -1,0 +1,36 @@
+.head-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.editor {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(260px, 0.8fr);
+  gap: 16px;
+  align-items: start;
+}
+.side-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.actions-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: sticky;
+  top: 76px;
+}
+.adm-hint {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+@media (max-width: 1000px) {
+  .editor {
+    grid-template-columns: 1fr;
+  }
+  .actions-card {
+    position: static;
+  }
+}

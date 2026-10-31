@@ -1,0 +1,127 @@
+@let s = state();
+@if (s.status === 'loading') {
+  <div class="container"><app-loading-state label="Carregando matéria…" /></div>
+} @else if (s.status === 'error') {
+  <div class="container page-block">
+    <app-empty-state
+      [tone]="s.httpStatus === 404 ? 'neutral' : 'error'"
+      [title]="s.httpStatus === 404 ? 'Matéria não encontrada' : 'Não foi possível carregar a matéria'"
+      [message]="
+        s.httpStatus === 404
+          ? 'O endereço pode estar incorreto ou a matéria foi removida.'
+          : s.message
+      "
+      linkLabel="Voltar para a página inicial"
+      linkTo="/"
+    />
+  </div>
+} @else {
+  @let article = s.data.data;
+  <article class="container article-page">
+    <nav class="crumbs" aria-label="Navegação">
+      <button type="button" class="back-link" (click)="back()">← Voltar</button>
+      @if (article.category; as category) {
+        <span class="sep">/</span>
+        <a [routerLink]="['/categoria', category.slug]">{{ category.name }}</a>
+      }
+    </nav>
+
+    <header class="article-head">
+      @if (article.category; as category) {
+        <a class="category-pill" [routerLink]="['/categoria', category.slug]">{{ category.name }}</a>
+      }
+      <h1>{{ article.title }}</h1>
+      @if (article.subtitle) {
+        <p class="subtitle">{{ article.subtitle }}</p>
+      }
+      <div class="byline">
+        @if (article.author) {
+          <span class="author">
+            <span class="avatar" aria-hidden="true">{{ article.author.name.charAt(0) }}</span>
+            <span>
+              <strong>{{ article.author.name }}</strong>
+              @if (article.author.specialty) {
+                <small>{{ article.author.specialty }}</small>
+              }
+            </span>
+          </span>
+        }
+        <span class="dates">
+          @if (article.published_at) {
+            <span>Publicado em {{ article.published_at | dateBr: 'datetime' }}</span>
+          }
+          @if (article.city || article.region) {
+            <span>{{ article.city?.name ?? article.region?.name }}</span>
+          }
+        </span>
+      </div>
+    </header>
+
+    <div class="toolbar">
+      <div class="share" aria-label="Compartilhar">
+        <span class="toolbar-label">Compartilhar</span>
+        <button type="button" (click)="copyLink()">{{ copied() ? 'Link copiado ✓' : 'Copiar link' }}</button>
+        <a [href]="whatsappLink(article.title)" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+        <a [href]="twitterLink(article.title)" target="_blank" rel="noopener noreferrer">Twitter</a>
+      </div>
+      <div class="font-controls" aria-label="Tamanho do texto">
+        <span class="toolbar-label">Texto</span>
+        <button type="button" aria-label="Diminuir fonte" [disabled]="!canDecrease()" (click)="changeFont(-1)">A−</button>
+        <button type="button" aria-label="Aumentar fonte" [disabled]="!canIncrease()" (click)="changeFont(1)">A+</button>
+      </div>
+    </div>
+
+    @if (article.cover_url) {
+      <figure class="cover">
+        <img [src]="article.cover_url" [alt]="article.title" />
+        @if (article.image_credit) {
+          <figcaption>Foto: {{ article.image_credit }}</figcaption>
+        }
+      </figure>
+    }
+
+    <div class="article-body" [style.font-size.px]="fontSize()" [innerHTML]="article.body"></div>
+
+    @if (article.source_name) {
+      <p class="source">Fonte: {{ article.source_name }}</p>
+    }
+
+    @if (article.tags && article.tags.length > 0) {
+      <div class="tags">
+        @for (tag of article.tags; track tag.id) {
+          <span>#{{ tag.name }}</span>
+        }
+      </div>
+    }
+
+    @if (article.author; as author) {
+      @if (author.bio) {
+        <aside class="author-box">
+          <strong>Sobre {{ author.name }}</strong>
+          <p>{{ author.bio }}</p>
+        </aside>
+      }
+    }
+  </article>
+
+  @if (s.data.related && s.data.related.length > 0) {
+    <section class="container related">
+      <div class="section-title-row">
+        <div>
+          <span class="eyebrow">CONTINUE LENDO</span>
+          <h2>Leia também <span class="title-period">.</span></h2>
+        </div>
+        @if (article.category; as category) {
+          <a class="text-link" [routerLink]="['/categoria', category.slug]">
+            Mais em {{ category.name }} <span>→</span>
+          </a>
+        }
+      </div>
+      <div class="news-grid related-grid">
+        @for (item of s.data.related; track item.id) {
+          <app-news-card [article]="item" />
+        }
+      </div>
+    </section>
+  }
+}

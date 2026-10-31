@@ -1,0 +1,139 @@
+<div class="adm-page-head">
+  <div>
+    <span class="eyebrow">{{ isEdit ? 'EDITAR' : 'NOVA' }} NOTÍCIA</span>
+    <h1>{{ isEdit ? 'Editar notícia' : 'Nova notícia' }}</h1>
+  </div>
+  <div class="head-actions">
+    @if (status(); as current) {
+      <span class="adm-badge" [class]="'adm-badge is-' + current">{{ article()?.status_label }}</span>
+    }
+    <a class="adm-btn is-ghost" routerLink="/admin/noticias">← Voltar à lista</a>
+  </div>
+</div>
+
+@if (loading()) {
+  <app-loading-state label="Carregando notícia…" />
+} @else if (loadError(); as message) {
+  <app-empty-state
+    tone="error"
+    title="Não foi possível abrir a notícia"
+    [message]="message"
+    linkLabel="Voltar à lista"
+    linkTo="/admin/noticias"
+  />
+} @else {
+  @if (error(); as message) {
+    <div class="adm-alert is-error" role="alert">{{ message }}</div>
+  }
+  @if (success(); as message) {
+    <div class="adm-alert is-success" role="status">{{ message }}</div>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="save()" novalidate class="editor">
+    <div class="adm-card main-col">
+      <div class="adm-field" [class.has-error]="fieldError('title')">
+        <label for="title">Título *</label>
+        <input id="title" type="text" formControlName="title" maxlength="255" />
+        @if (fieldError('title'); as e) {
+          <span class="adm-error">{{ e }}</span>
+        }
+      </div>
+
+      <div class="adm-field" [class.has-error]="fieldError('subtitle')">
+        <label for="subtitle">Subtítulo (linha fina)</label>
+        <input id="subtitle" type="text" formControlName="subtitle" maxlength="255" />
+        @if (fieldError('subtitle'); as e) {
+          <span class="adm-error">{{ e }}</span>
+        }
+      </div>
+
+      <div class="adm-field" [class.has-error]="fieldError('summary')">
+        <label for="summary">Resumo</label>
+        <textarea id="summary" rows="3" formControlName="summary" maxlength="1000"></textarea>
+        <span class="adm-hint">Aparece nos cards e na busca. Máximo de 1000 caracteres.</span>
+        @if (fieldError('summary'); as e) {
+          <span class="adm-error">{{ e }}</span>
+        }
+      </div>
+
+      <div class="adm-field" [class.has-error]="fieldError('body')">
+        <label for="body">Texto da matéria *</label>
+        <textarea id="body" rows="16" formControlName="body"></textarea>
+        <span class="adm-hint">HTML básico é aceito (p, h2, h3, a, ul, ol, blockquote, strong, em).</span>
+        @if (fieldError('body'); as e) {
+          <span class="adm-error">{{ e }}</span>
+        }
+      </div>
+    </div>
+
+    <aside class="side-col">
+      <div class="adm-card">
+        <h2>Classificação</h2>
+        <div class="adm-field" [class.has-error]="fieldError('primary_category_id')">
+          <label for="category">Categoria principal *</label>
+          <select id="category" formControlName="primary_category_id">
+            <option [ngValue]="null">Selecione…</option>
+            @for (category of categories(); track category.id) {
+              <option [ngValue]="category.id">
+                {{ category.parent_id ? '— ' : '' }}{{ category.name }}
+              </option>
+            }
+          </select>
+          @if (fieldError('primary_category_id'); as e) {
+            <span class="adm-error">{{ e }}</span>
+          }
+        </div>
+        <div class="adm-field" [class.has-error]="fieldError('source_name')">
+          <label for="source_name">Fonte</label>
+          <input id="source_name" type="text" formControlName="source_name" />
+        </div>
+      </div>
+
+      <div class="adm-card">
+        <h2>Imagem de capa</h2>
+        <div class="adm-field" [class.has-error]="fieldError('cover_url')">
+          <label for="cover_url">URL da imagem</label>
+          <input id="cover_url" type="url" formControlName="cover_url" placeholder="https://…" />
+          @if (fieldError('cover_url'); as e) {
+            <span class="adm-error">{{ e }}</span>
+          }
+        </div>
+        <div class="adm-field">
+          <label for="image_credit">Crédito</label>
+          <input id="image_credit" type="text" formControlName="image_credit" />
+        </div>
+      </div>
+
+      <div class="adm-card">
+        <h2>SEO</h2>
+        <div class="adm-field" [class.has-error]="fieldError('meta_title')">
+          <label for="meta_title">Título SEO</label>
+          <input id="meta_title" type="text" formControlName="meta_title" maxlength="255" />
+        </div>
+        <div class="adm-field" [class.has-error]="fieldError('meta_description')">
+          <label for="meta_description">Descrição SEO</label>
+          <textarea id="meta_description" rows="3" formControlName="meta_description" maxlength="320"></textarea>
+        </div>
+      </div>
+
+      <div class="adm-card actions-card">
+        <button class="adm-btn" type="submit" [disabled]="busy()">
+          {{ busy() ? 'Salvando…' : isEdit ? 'Salvar alterações' : 'Criar rascunho' }}
+        </button>
+        @if (isEdit && canSubmitReview()) {
+          <button class="adm-btn is-ghost" type="button" [disabled]="busy()" (click)="transition('submit-review')">
+            Enviar para revisão
+          </button>
+        }
+        @if (isEdit && canPublish()) {
+          <button class="adm-btn is-green" type="button" [disabled]="busy()" (click)="transition('publish')">
+            Publicar agora
+          </button>
+        }
+        @if (isEdit && !auth.canPublish()) {
+          <span class="adm-hint">Seu perfil não tem permissão para publicar diretamente.</span>
+        }
+      </div>
+    </aside>
+  </form>
+}

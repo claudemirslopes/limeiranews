@@ -1,0 +1,23 @@
+@let s = state();
+<div class="container page-block static">
+  @if (s.status === 'loading') {
+    <app-loading-state />
+  } @else if (s.status === 'error') {
+    <app-empty-state
+      [tone]="s.httpStatus === 404 ? 'neutral' : 'error'"
+      [title]="s.httpStatus === 404 ? 'Página não encontrada' : 'Não foi possível carregar a página'"
+      [message]="s.httpStatus === 404 ? 'O conteúdo que você procura não existe ou foi removido.' : s.message"
+      linkLabel="Voltar para a página inicial"
+      linkTo="/"
+    />
+  } @else {
+    <header class="page-heading">
+      <span class="eyebrow">Institucional</span>
+      <h1>{{ s.data.title }}<span class="title-period">.</span></h1>
+      @if (s.data.updated_at) {
+        <p>Atualizado em {{ s.data.updated_at | dateBr: 'long' }}</p>
+      }
+    </header>
+    <div class="static-body" [innerHTML]="s.data.body"></div>
+  }
+</div>

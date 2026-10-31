@@ -1,0 +1,40 @@
+Options -Indexes +FollowSymLinks
+DirectoryIndex dist/limeiranews/browser/index.html
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /limeiranews/
+
+    CGIPassAuth On
+
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Keep source, secrets and dependencies off the web.
+    RewriteRule ^(?:backend|src|node_modules|vendor|docs|\.angular|\.git)(?:/|$) - [F]
+    RewriteRule (?:^|/)\. - [F]
+
+    # Laravel: API, Sanctum, health and SEO feeds.
+    RewriteRule ^(api|sanctum|up)(/.*)?$ index.php [END,QSA]
+    RewriteRule ^(robots\.txt|sitemap\.xml|news-sitemap\.xml|feed\.xml)$ index.php [END,QSA]
+
+    # Public uploads live in backend/storage/app/public.
+    RewriteCond %{REQUEST_URI} !\.\.
+    RewriteRule ^storage/(.+)$ backend/storage/app/public/$1 [END]
+
+    # Homepage of the Angular app.
+    RewriteRule ^$ dist/limeiranews/browser/index.html [END]
+
+    # Compiled portal assets (JS, CSS, images).
+    RewriteCond %{DOCUMENT_ROOT}/limeiranews/dist/limeiranews/browser/$1 -f
+    RewriteRule ^(.+)$ dist/limeiranews/browser/$1 [END]
+
+    # Client-side routes (/noticia, /admin, ...).
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ dist/limeiranews/browser/index.html [END]
+</IfModule>
+
+<FilesMatch "^\.env">
+    Require all denied
+</FilesMatch>

@@ -1,0 +1,66 @@
+<div class="adm-page-head">
+  <div>
+    <span class="eyebrow">VISÃO GERAL</span>
+    <h1>Painel da redação</h1>
+  </div>
+  <a class="adm-btn is-green" routerLink="/admin/noticias/nova">＋ Nova notícia</a>
+</div>
+
+@let s = state();
+@if (s.status === 'loading') {
+  <app-loading-state label="Carregando indicadores…" />
+} @else if (s.status === 'error') {
+  <app-empty-state tone="error" title="Não foi possível carregar o painel" [message]="s.message" />
+} @else {
+  <section class="stat-grid">
+    @for (card of cards(); track card.label) {
+      <div class="stat">
+        <strong>{{ card.value }}</strong>
+        <span>{{ card.label }}</span>
+      </div>
+    }
+  </section>
+
+  <div class="dash-grid">
+    <section class="adm-card">
+      <h2>Matérias por status</h2>
+      <ul class="status-list">
+        @for (item of statuses(); track item.key) {
+          <li>
+            <span class="adm-badge" [class]="'adm-badge is-' + item.key">{{ item.label }}</span>
+            <strong>{{ item.total }}</strong>
+          </li>
+        }
+      </ul>
+    </section>
+
+    <section class="adm-card recent">
+      <div class="recent-head">
+        <h2>Atualizadas recentemente</h2>
+        <a class="text-link" routerLink="/admin/noticias">Ver todas <span>→</span></a>
+      </div>
+      @if (s.data.recent_articles.length === 0) {
+        <p class="adm-muted">Nenhuma matéria cadastrada ainda.</p>
+      } @else {
+        <ul class="recent-list">
+          @for (article of s.data.recent_articles; track article.id) {
+            <li>
+              <a [routerLink]="['/admin/noticias', article.id, 'editar']">
+                <strong>{{ article.title }}</strong>
+                <small>
+                  {{ article.category?.name ?? 'Sem categoria' }} ·
+                  {{ article.updated_at | dateBr: 'datetime' }}
+                </small>
+              </a>
+              @if (article.status) {
+                <span class="adm-badge" [class]="'adm-badge is-' + article.status">
+                  {{ article.status_label }}
+                </span>
+              }
+            </li>
+          }
+        </ul>
+      }
+    </section>
+  </div>
+}
